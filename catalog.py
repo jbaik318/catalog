@@ -13,8 +13,10 @@ session = DBSession()
 #routing endpoints
 @app.route('/')
 def showCatalog():
-	listCatalog = session.query(Catalog).all()
-	return listCatalog
+	listCatalog = session.query(Category).all()
+	listItem = session.query(Item).all()
+	print(listCatalog)
+	return render_template('index.html', catalog = listCatalog, item = listItem)
 	
 @app.route('/<string:category>')
 @app.route('/<string:category>/items')
