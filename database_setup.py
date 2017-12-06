@@ -1,0 +1,31 @@
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy import create_engine
+from passlib.apps import custom_app_content as pwc_context
+
+Base = declarative_base()
+
+class Category(Base):
+	__tablename__ = 'category'
+	name = Column(String(80), nullable = False)
+	id = Column(Integer, primary_key = True)
+
+class Item(Base):
+	__tablename__ = 'item'
+	name = Column(String(80), nullable = False)
+	id = Column(Integer, primary_key = True)
+	description = Column(String(250))
+	catType = Column(String(80))
+	category_id = Column(Integer, ForeignKey('category.id'))
+	category = relationship(Category)
+
+class User:
+	__tablename__ = 'user'
+	name = Column(String(80), index = False)
+	id = Column(Integer, primary_key = True)
+	#add password hases here
+
+engine = create_engine('sqlite:///catalog.db')
+
+Base.metadata.create_all(engine)
