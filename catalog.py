@@ -1,14 +1,21 @@
 #import all libraries here
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Category, Base, Item
 app = Flask(__name__)
 
-
+engine = create_engine('sqlite:///catalog.db')
+Base.metadata.bind = engine
+DBSession =  sessionmaker(bind = engine)
+session = DBSession()
 
 #routing endpoints
 @app.route('/')
 def showCatalog():
-	return ('this is the main catalog page')
-
+	listCatalog = session.query(Catalog).all()
+	return listCatalog
+	
 @app.route('/<string:category>')
 @app.route('/<string:category>/items')
 def showCategory(category):	
