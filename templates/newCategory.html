@@ -1,0 +1,27 @@
+<html>
+<head>
+</head>
+<body>
+
+<h1>New Category Item</h1>
+
+<div>
+<form action="{{ url_for('createItem')}}" method = 'post'>
+
+<dl>
+	<dt>Name:</dt>
+		<dd><input type ='text' size='30' name='name'></dd>
+
+</dl>
+
+<input type='submit' value='Create'>
+
+</form>
+</div>
+
+</body>
+
+
+
+
+</html>

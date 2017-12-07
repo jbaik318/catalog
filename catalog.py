@@ -21,19 +21,34 @@ def showCatalog():
 @app.route('/<string:category>/items')
 def showCategory(category):	
 	listCatalog = session.query(Category).all()
+
 	specificCategory = session.query(Category).filter_by(name = category.title())
-	return render_template('viewCategory.html', category = specificCategory, catalog =listCatalog)
+	#print(category.title())
+
+	#category = session.query(Category).filter_by(id = specificCategory[0].id)
+	return render_template('viewCategory.html', category = category, catalog =listCatalog)
 
 @app.route('/<string:category>/<string:item>')
 def showItem(category, item):
+
 	return ('this page shows details on each item')
 
-@app.route('/<string:category>/create')
+@app.route('/<string:category>/create', methods = ['GET','POST'])
 def createItem(category):
-	return ('this page add a new item to category')
+	specificCategory = session.query(Category).filter_by(name = category.title())
+	category = session.query(Category).filter_by(id = specificCategory[0].id)
+	
+	if request.method == 'POST':
+		addItem = Item(name = request.form['name'], description = request.form['description'], menu_id = category.id)
+		session.add(addItem)
+		session.commit()
+		return redirect(url_for('showCategory'))
+	else:
+		return render_template('newCategory.html')
 
-@app.route('/<string:category>/edit')
+@app.route('/<string:category>/edit', methods = ['GET','POST'])
 def editItem(category):
+
 	return ('this page edits item')
 
 @app.route('/<string:category>/delete')
