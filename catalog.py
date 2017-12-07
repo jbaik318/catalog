@@ -15,13 +15,14 @@ session = DBSession()
 def showCatalog():
 	listCatalog = session.query(Category).all()
 	listItem = session.query(Item).all()
-	print(listCatalog)
 	return render_template('index.html', catalog = listCatalog, item = listItem)
 	
 @app.route('/<string:category>')
 @app.route('/<string:category>/items')
 def showCategory(category):	
-	return ('this returns items within a catalog')
+	listCatalog = session.query(Category).all()
+	specificCategory = session.query(Category).filter_by(name = category.title())
+	return render_template('viewCategory.html', category = specificCategory, catalog =listCatalog)
 
 @app.route('/<string:category>/<string:item>')
 def showItem(category, item):
