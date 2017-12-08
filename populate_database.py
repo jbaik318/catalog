@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
  
-from database_setup import Category, Base
+from database_setup import Category, Base, Item
  
 engine = create_engine('sqlite:///catalog.db')
 # Bind the engine to the metadata of the Base class so that the
@@ -23,6 +23,14 @@ session = DBSession()
 #Menu for UrbanBurger
 category1 = Category(name = "Soccer")
 session.add(category1)
+session.commit()
+
+item1 = Item(name = 'ball', category = category1)
+session.add(item1)
+session.commit()
+
+item2 = Item(name = 'net', category = category1)
+session.add(item2)
 session.commit()
 
 category2 = Category(name = "Basketball")
