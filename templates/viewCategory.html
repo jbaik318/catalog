@@ -1,4 +1,4 @@
-l<html>
+<html>
 <head>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -9,15 +9,18 @@ l<html>
 	<h1>Catalog App</h1>
 	<h2>{{category.name}}</h2>
 
+
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6">
 				<h2>Categories</h2>
 				{% for x in catalog %}
-					<p>{{x.name}}</p>
+					<a href="{{ url_for('showCategory', category_name = x.name)}}">{{x.name}}</a>
+					<br>
 				{% endfor %}
 			</div>
 			<div class="col-md-6">
+				<a href="{{url_for('createItem', category_name = category.name)}}">Create a new Item for {{category.name}}</a>
 				<h2>Items</h2>
 				{% for x in item %}
 					<p>{{x.name}}</p>

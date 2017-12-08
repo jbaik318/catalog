@@ -3,10 +3,11 @@
 </head>
 <body>
 
-<h1>New Category Item</h1>
+<h1>New Category Item for {{category.name}}</h1>
 
 <div>
-<form action="{{ url_for('createItem')}}" method = 'post'>
+<form action="{{ url_for('createItem' , category_name = category.name)}}" method = 'POST'>
+
 
 <dl>
 	<dt>Name:</dt>
