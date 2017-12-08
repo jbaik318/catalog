@@ -1,4 +1,4 @@
-<html>
+l<html>
 <head>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -7,6 +7,7 @@
 
 <body>
 	<h1>Catalog App</h1>
+	<h2>{{category.name}}</h2>
 
 	<div class="container">
 		<div class="row">
@@ -18,8 +19,8 @@
 			</div>
 			<div class="col-md-6">
 				<h2>Items</h2>
-				{% for x in category %}
-					<p>{{x}}</p>
+				{% for x in item %}
+					<p>{{x.name}}</p>
 				{% endfor %}
 			</div>
 		</div>

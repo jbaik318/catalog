@@ -17,12 +17,18 @@ def showCatalog():
 	listItem = session.query(Item).all()
 	return render_template('index.html', catalog = listCatalog, item = listItem)
 	
-@app.route('/<string:category>')
-@app.route('/<string:category>/items')
-def showCategory(category):	
+@app.route('/<category_name>')
+@app.route('/<category_name>/items')
+def showCategory(category_name):	
 	listCatalog = session.query(Category).all()
-	specificCategory = session.query(Category).filter_by(name = category.title())
-	return render_template('viewCategory.html', category = specificCategory, catalog =listCatalog)
+	iso = session.query(Category).filter_by(name  = category_name.title())
+	for x in iso:
+		catId = x.id
+	category = session.query(Category).filter_by(id = catId).one()
+	item = session.query(Item).filter_by(category_id = category.id)
+
+	return render_template('viewCategory.html', catalog = listCatalog, category = category, item = item)
+	
 
 @app.route('/<string:category>/<string:item>')
 def showItem(category, item):
