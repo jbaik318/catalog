@@ -27,16 +27,6 @@ def itemToId(item_name):
 	item = session.query(Item).filter_by(id = itemId).first()
 	return item
 
-def categoryFromItem(item_name):
-	iso = session.query(Item).filter_by(name = item_name)
-	itemId = ""
-	for x in iso:
-		itemId = x.id
-	category = session.query(Category).filter_by(id = itemId).first()
-	return category
-
-
-
 #routing endpoints
 @app.route('/')
 def showCatalog():
