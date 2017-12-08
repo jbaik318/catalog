@@ -78,12 +78,13 @@ def deleteItem(item_name):
 	else:
 		return render_template('deleteItem.html', item = item )
 
-'''@app.route('/<string:category_name>/<string:item_name>')
+@app.route('/catalog/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
+	item = itemToId(item_name)
 	category = categoryToId(category_name)
 
-	return ('this page shows details on each item')'''
-
+	return render_template('viewItem.html', item = item, category =category)
+	
 #designate port to operate
 if __name__ == '__main__':
   	app.secret_key = 'super_secret_key'
