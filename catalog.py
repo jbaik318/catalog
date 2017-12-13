@@ -181,6 +181,7 @@ def gdisconnect():
         del login_session['email']
         del login_session['picture']
 
+        ### make a sucessful log out page that links back to main page
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -214,7 +215,6 @@ def itemToId(item_name):
 def showCatalog():
 	listCatalog = session.query(Category).all()
 	listItem = session.query(Item).all()
-	print(login_session)
 	if 'username' not in login_session:
 		return render_template('publiccatalog.html', catalog = listCatalog, item = listItem)
 	else:
@@ -228,7 +228,7 @@ def showCategory(category_name):
 	category = categoryToId(category_name)
 	item = session.query(Item).filter_by(category_id = category.id)
 	if 'username' not in login_session:
-		return render_template('publicViewCategory.html', catelog= listCatalog, item = item)
+		return render_template('publicViewCategory.html', catalog= listCatalog, category = category, item = item)
 	else:
 		return render_template('viewCategory.html', catalog = listCatalog, category = category, item = item)
 
