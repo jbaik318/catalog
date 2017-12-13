@@ -228,7 +228,7 @@ def showCategory(category_name):
 	category = categoryToId(category_name)
 	item = session.query(Item).filter_by(category_id = category.id)
 	if 'username' not in login_session:
-		return render_template('publicViewCategory.html', catelog= listCatalog, item = listItem)
+		return render_template('publicViewCategory.html', catelog= listCatalog, item = item)
 	else:
 		return render_template('viewCategory.html', catalog = listCatalog, category = category, item = item)
 
