@@ -167,8 +167,7 @@ def gdisconnect():
         # Only disconnect a connected user.
     access_token = login_session.get('access_token')
     if access_token is None:
-        response = make_response(
-            json.dumps('Current user not connected.'), 401)
+        response = make_response(json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
@@ -187,8 +186,7 @@ def gdisconnect():
         return response
     else:
         # For whatever reason, the given token was invalid.
-        response = make_response(
-            json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -216,6 +214,7 @@ def itemToId(item_name):
 def showCatalog():
 	listCatalog = session.query(Category).all()
 	listItem = session.query(Item).all()
+	print(login_session)
 	if 'username' not in login_session:
 		return render_template('publiccatalog.html', catalog = listCatalog, item = listItem)
 	else:
