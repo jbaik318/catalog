@@ -1,5 +1,5 @@
 #import all libraries here
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, 
+from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Category, Base, Item, User
@@ -9,11 +9,11 @@ import random
 import string
 
 from oauth2client.client import flow_from_clientsecrets
-from oauth2client.client import FlowExchangerError
+from oauth2client.client import FlowExchangeError
 
 import httplib2
 import json
-from flask import make_session
+from flask import make_response
 import requests
 
 app = Flask(__name__)
@@ -24,7 +24,7 @@ DBSession =  sessionmaker(bind = engine)
 session = DBSession()
 
 #Read the google Oauth credentials 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('client_secret.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "catalog"
 
 # This serves as an anti-forgery state token
@@ -49,7 +49,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -215,7 +215,10 @@ def itemToId(item_name):
 def showCatalog():
 	listCatalog = session.query(Category).all()
 	listItem = session.query(Item).all()
-	return render_template('index.html', catalog = listCatalog, item = listItem)
+	if 'username' not in login_session:
+		return render_template('publiccatalog.html', catalog = listCatalog, item = listItem)
+	else:
+		return render_template('index.html', catalog = listCatalog, item = listItem)
 
 	
 @app.route('/catalog/<category_name>')
