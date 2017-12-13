@@ -283,7 +283,7 @@ def showItem(category_name, item_name):
 	item = itemToId(item_name)
 	category = categoryToId(category_name)
 	if 'username' not in login_session:
-		return render_template('publicViewItem/html', item = item, category = category)
+		return render_template('publicViewItem.html', item = item, category = category)
 	else:
 		return render_template('viewItem.html', item = item, category =category)
 	
