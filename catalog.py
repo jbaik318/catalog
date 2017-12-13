@@ -1,16 +1,25 @@
+'''
+Catalog.py is the heart and soul that allows the entire interface system to work. 
+
+This file insures that the user is properly redirected to the corrent endpoint based on the user's actions.
+This file also takes into account validating the user's credentials through Google's Oauth2/v1.
+Based on whether or not the user is the original creator of each item, this file will allow proper access and action.
+
+Created by: John B
+Contact:  jbaik318@gmail.com
+
+'''
+
 #import all libraries here
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Category, Base, Item, User
-
 from flask import session as login_session
 import random
 import string
-
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
-
 import httplib2
 import json
 from flask import make_response
@@ -18,17 +27,17 @@ import requests
 
 app = Flask(__name__)
 
+# Create an engine callable object that allows interaction between database and file
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.bind = engine
 DBSession =  sessionmaker(bind = engine)
 session = DBSession()
 
-#Read the google Oauth credentials 
+# Read the google Oauth credentials 
 CLIENT_ID = json.loads(open('client_secret.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "catalog"
 
-# This serves as an anti-forgery state token
-# token is randomized per session 
+# Serve as an anti-forgery state token with randomized token
 @app.route('/login')
 def showLogin():
 	state =  ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
@@ -36,6 +45,8 @@ def showLogin():
 
 	return render_template('login.html', STATE = state)
 
+
+# Use Google's Oauth to connect to user's Google account
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -112,7 +123,7 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
-    # see if user exists, if it doesn't make a new one
+    # See if user exists. If it doesn't make a new one
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
@@ -129,9 +140,7 @@ def gconnect():
     return output
 
 
-# User Helper Functions
-
-
+# Helper Functions
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
     session.add(newUser)
@@ -152,8 +161,7 @@ def getUserID(email):
     except:
         return None
 
-# DISCONNET - Revoke a current user's token and reset their login_session
-
+# DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
         # Only disconnect a connected user.
@@ -203,14 +211,7 @@ def itemToId(item_name):
 	return item
 
 
-
-
-
-
-
-
-
-#routing endpoints
+# Route User to Endpoints
 @app.route('/')
 def showCatalog():
 	listCatalog = session.query(Category).all()
@@ -232,10 +233,10 @@ def showCategory(category_name):
 	else:
 		return render_template('viewCategory.html', catalog = listCatalog, category = category, item = item)
 
+
 @app.route('/catalog/<category_name>/create', methods = ['GET','POST'])
 def createItem(category_name):
 	category = categoryToId(category_name)
-
 	if 'username' not in login_session:
 		return redirect('/login')
 	if request.method == 'POST':
@@ -246,6 +247,7 @@ def createItem(category_name):
 	else:
 		return render_template('newCategory.html', category = category, )
 
+
 @app.route('/catalog/<item_name>/edit', methods = ['GET','POST'])
 def editItem(item_name):
 	item = itemToId(item_name)
@@ -253,6 +255,7 @@ def editItem(item_name):
 	if 'username' not in login_session:
 		return redirect('/login')
 	if item.user_id != login_session['user_id']:
+		### create a js file for this line below
 		return "<script>function myFunction) {alert(('You are not authorized to edit this item.');)</script><body onload='myFunction()'>"
 	if request.method ==  'POST':
 		item.name = request.form['name']
@@ -270,6 +273,7 @@ def deleteItem(item_name):
 	if 'username' not in login_session:
 		return redirect('/login')
 	if item.user_id != login_session['user_id']:
+		### create a js file for this line below
 		return "<script>function myFunction) {alert(('You are not authorized to delete this item.');)</script><body onload='myFunction()'>"
 	if request.method == 'POST':
 		session.delete(item)
@@ -277,6 +281,7 @@ def deleteItem(item_name):
 		return redirect(url_for('showCategory', category_name = category.name))
 	else:
 		return render_template('deleteItem.html', item = item )
+
 
 @app.route('/catalog/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
@@ -286,6 +291,7 @@ def showItem(category_name, item_name):
 		return render_template('publicViewItem.html', item = item, category = category)
 	else:
 		return render_template('viewItem.html', item = item, category =category)
+
 	
 #designate port to operate
 if __name__ == '__main__':
