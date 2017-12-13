@@ -227,24 +227,33 @@ def showCategory(category_name):
 	listCatalog = session.query(Category).all()
 	category = categoryToId(category_name)
 	item = session.query(Item).filter_by(category_id = category.id)
-
-	return render_template('viewCategory.html', catalog = listCatalog, category = category, item = item)
+	if 'username' not in login_session:
+		return render_template('publicViewCategory.html', catelog= listCatalog, item = listItem)
+	else:
+		return render_template('viewCategory.html', catalog = listCatalog, category = category, item = item)
 
 @app.route('/catalog/<category_name>/create', methods = ['GET','POST'])
 def createItem(category_name):
 	category = categoryToId(category_name)
+
+	if 'username' not in login_session:
+		return redirect('/login')
 	if request.method == 'POST':
-		addItem = Item(name = request.form['name'], category_id = category.id)
+		addItem = Item(name = request.form['name'], category_id = category.id, user_id = login_session['user_id'])
 		session.add(addItem)
 		session.commit()
 		return redirect(url_for('showCategory', category_name = category.name))
 	else:
-		return render_template('newCategory.html', category = category)
+		return render_template('newCategory.html', category = category, )
 
 @app.route('/catalog/<item_name>/edit', methods = ['GET','POST'])
 def editItem(item_name):
 	item = itemToId(item_name)
 	category = session.query(Category).filter_by(id = item.category_id).first()
+	if 'username' not in login_session:
+		return redirect('/login')
+	if item.user_id != login_session['user_id']:
+		return "<script>function myFunction) {alert(('You are not authorized to edit this item.');)</script><body onload='myFunction()'>"
 	if request.method ==  'POST':
 		item.name = request.form['name']
 		session.add(item)
@@ -258,6 +267,10 @@ def editItem(item_name):
 def deleteItem(item_name):
 	item = itemToId(item_name)
 	category = session.query(Category).filter_by(id = item.category_id).first()
+	if 'username' not in login_session:
+		return redirect('/login')
+	if item.user_id != login_session['user_id']:
+		return "<script>function myFunction) {alert(('You are not authorized to delete this item.');)</script><body onload='myFunction()'>"
 	if request.method == 'POST':
 		session.delete(item)
 		session.commit()
@@ -269,8 +282,10 @@ def deleteItem(item_name):
 def showItem(category_name, item_name):
 	item = itemToId(item_name)
 	category = categoryToId(category_name)
-
-	return render_template('viewItem.html', item = item, category =category)
+	if 'username' not in login_session:
+		return render_template('publicViewItem/html', item = item, category = category)
+	else:
+		return render_template('viewItem.html', item = item, category =category)
 	
 #designate port to operate
 if __name__ == '__main__':
