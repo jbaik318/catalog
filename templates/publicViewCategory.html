@@ -1,14 +1,9 @@
-<html>
-<head>
-
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-</head>
-
-<body>
+{% extends "head.html" %}
+{% block content %}
+{% include "publicHeader.html" %}
+	
 	<h1>Catalog App</h1>
 	<h2>{{category.name}}</h2>
-
 
 	<div class="container">
 		<div class="row">
@@ -28,6 +23,8 @@
 			</div>
 		</div>
 	</div>
+
+	{% endblock %}
 
 
 </body>
