@@ -14,7 +14,7 @@
 			<div class="col-md-6">
 				<h2>Latest Items</h2>
 				{% for x in item %}
-					<p>{{x.name}}</p>
+					<p>{{x.name}} <em>( {{catalog[x.category_id-1].name}} )</em></p>
 				{% endfor %}
 			</div>
 		</div>

@@ -19,6 +19,7 @@
 				<h2>Items</h2>
 				{% for x in item %}
 					<a href="{{ url_for('showItem', category_name = category.name, item_name = x.name)}}">{{x.name}}</a><br>
+					{{x.category_id}}
 				{% endfor %}
 			</div>
 		</div>

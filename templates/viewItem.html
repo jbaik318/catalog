@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+{% extends "head.html" %}
+{% block content %}
+{% include "header.html" %}
+
+
 	<h1>{{item.name}}</h1>
 	<p>description here</p>
+	<a href="{{ url_for('editItem', item_name = item.name)}}">edit   </a>
+	<a href="{{ url_for('deleteItem', item_name = item.name)}}">delete</a>
 
+
+	{% endblock %}
 </body>
 </html>
