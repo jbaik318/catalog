@@ -1,12 +1,14 @@
-<div class="row top-menu">
-	<div class="col-md-6">
-		<a href="{{url_for('showCatalog')}}">
-			<span class="glyphicon glyphicon-home" aria-hidden="true"></span> Show All Categories
-		</a>
-	</div>
-	<div class="col-md-6 text-right">
-		<div class="btn-group">
-			<a class='btn btn-danger' href="{{url_for('showLogin')}}" style="width:12em;"> Sign in with Google</a>
+<nav class="navbar navbar-inverse bg-inverse full-width">
+	<div class="row top-menu">
+		<div class="col-md-6">
+			<a href="{{url_for('showCatalog')}}">
+				<h1 class="title">Catalog App</h1>
+			</a>
+		</div>
+		<div class="col-md-6 text-right">
+			<div class="btn-group">
+				<a class='btn btn-danger' href="{{url_for('showLogin')}}" style="width:12em;"> Log In</a>
+			</div>
 		</div>
 	</div>
-</div>
+</nav>
