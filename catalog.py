@@ -150,6 +150,7 @@ def createUser(login_session):
 
 
 def getUserInfo(user_id):
+    
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
@@ -160,7 +161,7 @@ def getUserID(email):
         return user.id
     except:
         return None
-
+    
 # DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
@@ -244,51 +245,54 @@ def showCategory(category_name):
 
 @app.route('/catalog/<category_name>/create', methods = ['GET','POST'])
 def createItem(category_name):
-	category = categoryToId(category_name)
-	if 'username' not in login_session:
+    catalog = session.query(Category).all()
+    category = categoryToId(category_name)
+    if 'username' not in login_session:
 		return redirect('/login')
-	if request.method == 'POST':
-		addItem = Item(name = request.form['name'], category_id = category.id, user_id = login_session['user_id'])
-		session.add(addItem)
-		session.commit()
-		return redirect(url_for('showCategory', category_name = category.name))
-	else:
-		return render_template('newCategory.html', category = category, )
+    if request.method == 'POST':
+        addItem = Item(name = request.form['name'], description = request.form['description'], catType = request.form.get('category'), category_id = category.id, user_id = login_session['user_id'])
+        session.add(addItem)
+        session.commit()
+        return redirect(url_for('showCategory', category_name = category.name))
+    else:
+		return render_template('newCategory.html', category = category, catalog = catalog )
 
 
 @app.route('/catalog/<item_name>/edit', methods = ['GET','POST'])
 def editItem(item_name):
-	item = itemToId(item_name)
-	category = session.query(Category).filter_by(id = item.category_id).first()
-	if 'username' not in login_session:
-		return redirect('/login')
-	if item.user_id != login_session['user_id']:
+    catalog = session.query(Category).all()
+    item = itemToId(item_name)
+    category = session.query(Category).filter_by(id = item.category_id).first()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if item.user_id != login_session['user_id']:
 		### create a js file for this line below
-		return "<script>function myFunction) {alert(('You are not authorized to edit this item.');)</script><body onload='myFunction()'>"
-	if request.method ==  'POST':
-		item.name = request.form['name']
-		session.add(item)
-		session.commit()
-		return redirect(url_for('showCategory', category_name = category.name))
-	else:
-		return render_template('editItem.html', item = item)
-	
+        return "<script>function myFunction() {alert('You are not authorized to edit this item. Please create your own item in order to edit.');}</script><body onload='myFunction()''>"
+    if request.method ==  'POST':
+        item.name = request.form['name']
+        item.description = request.form['description']
+        item.catType = request.form['category']
+        session.add(item)
+        session.commit()
+        return redirect(url_for('showCategory', category_name = category.name))
+    else:
+        return render_template('editItem.html', item = item, catalog = catalog)
 
 @app.route('/catalog/<item_name>/delete', methods = ['GET','POST'])
 def deleteItem(item_name):
-	item = itemToId(item_name)
-	category = session.query(Category).filter_by(id = item.category_id).first()
-	if 'username' not in login_session:
-		return redirect('/login')
-	if item.user_id != login_session['user_id']:
-		### create a js file for this line below
-		return "<script>function myFunction) {alert(('You are not authorized to delete this item.');)</script><body onload='myFunction()'>"
-	if request.method == 'POST':
-		session.delete(item)
-		session.commit()
-		return redirect(url_for('showCategory', category_name = category.name))
-	else:
-		return render_template('deleteItem.html', item = item )
+    item = itemToId(item_name)
+    category = session.query(Category).filter_by(id = item.category_id).first()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if item.user_id != login_session['user_id']:
+        ### create a js file for this line below
+        return "<script>function myFunction() {alert('You are not authorized to delete this item. Please create your own item in order to delete.');}</script><body onload='myFunction()''>"
+    if request.method == 'POST':
+        session.delete(item)
+        session.commit()
+        return redirect(url_for('showCategory', category_name = category.name))
+    else:
+        return render_template('deleteItem.html', item = item )
 
 
 @app.route('/catalog/<string:category_name>/<string:item_name>')

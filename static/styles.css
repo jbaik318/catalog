@@ -1,0 +1,21 @@
+nav {
+	width: 100%;
+}
+
+a {
+	color: black;
+}
+
+.title {
+	color: white;
+}
+.top-menu {
+	width: 70%;
+	margin: auto;
+}
+
+.container {
+	background-color: #b4bbc6;
+	padding-top: 1em;
+}
+

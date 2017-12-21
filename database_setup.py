@@ -23,8 +23,8 @@ class Item(Base):
 	id = Column(Integer, primary_key = True)
 	user_id = Column(Integer, ForeignKey('user.id'))
 	user = relationship(User)
-	#description = Column(String(250))
-	#catType = Column(String(80))
+	description = Column(String(250))
+	catType = Column(String(80))
 	category_id = Column(Integer, ForeignKey('category.id'))
 	category = relationship(Category)
 
