@@ -2,12 +2,12 @@
 {% block content %}
 {% include "header.html" %}
 
-
+<div class="container">
 	<h1>{{item.name}}</h1>
-	<p>description here</p>
+	<p>{{item.description}}</p>
 	<a href="{{ url_for('editItem', item_name = item.name)}}">edit   </a>
 	<a href="{{ url_for('deleteItem', item_name = item.name)}}">delete</a>
-
+</div>
 
 	{% endblock %}
 </body>
