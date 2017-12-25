@@ -304,7 +304,54 @@ def showItem(category_name, item_name):
 	else:
 		return render_template('viewItem.html', item = item, category =category)
 
-	
+    
+    
+    
+    
+    
+    
+# JSON APIs to view Catalog Information
+
+@app.route('/json')
+def catalogJSON():
+    category = session.query(Category).all()
+    item = session.query(Item).all()
+
+    
+    catalog = [] 
+    temp = []
+    for c in category:
+        print('start of new category')
+        catItem = []
+        catalog.append(c.serialize)
+        for i in item:
+            if i.category_id == c.id:
+                catItem.append(i.serialize)
+        #catalog['item'] = catItem
+        #print(c.item, ' citem')
+        temp.append(catItem)
+        catalog[c.id-1]['item'] = catItem 
+    print(catalog)
+        
+    cat = {'category': catalog}
+
+    return jsonify(catalog)
+
+
+
+
+@app.route('/JSON')
+def categoryJSON():
+    item = session.query(Item).all()
+    Catalog = []
+    
+
+    for i in item:
+        Catalog.append(i.serialize)
+    return jsonify(Catalog)
+
+
+
 #designate port to operate
 if __name__ == '__main__':
   	app.secret_key = 'super_secret_key'
