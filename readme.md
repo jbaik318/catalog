@@ -4,7 +4,7 @@
 The objective of this project is to create a backend server program that hosts a web-based catalog for authorized users and non-authorized users.
 
 File Content 
-<dl>catalog.py
+<dl>
     <dt>catalog.py</dt>
     <dd>The heart and soul of the catalog program. This file reroutes users to designated endpoints based on their requests and authorization.</dd>
     <dt>database_setup.py</dt>
