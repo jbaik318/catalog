@@ -148,7 +148,6 @@ def createUser(login_session):
     user = session.query(User).filter_by(email=login_session['email']).one()
     return user.id
 
-
 def getUserInfo(user_id):
     
     user = session.query(User).filter_by(id=user_id).one()
@@ -202,7 +201,8 @@ def gdisconnect():
         return response
 
 
-# Functions return id based on argument name 
+# Shortcut functions
+# This function take the category name and returns a database type of that category
 def categoryToId(category_name):
 	iso = session.query(Category).filter_by(name  = category_name.title())
 	catId = ""
@@ -211,6 +211,7 @@ def categoryToId(category_name):
 	category = session.query(Category).filter_by(id = catId).one()
 	return category
 
+# This function take the item name and returns a database type of that item
 def itemToId(item_name):
 	iso = session.query(Item).filter_by(name = item_name)
 	itemId = ""
@@ -230,7 +231,7 @@ def showCatalog():
 	else:
 		return render_template('index.html', catalog = listCatalog, item = listItem)
 
-	
+
 @app.route('/catalog/<category_name>')
 @app.route('/catalog/<category_name>/items')
 def showCategory(category_name):	
@@ -305,11 +306,6 @@ def showItem(category_name, item_name):
 		return render_template('viewItem.html', item = item, category =category)
 
     
-    
-    
-    
-    
-    
 # JSON APIs to view Catalog Information
 
 @app.route('/json')
@@ -317,9 +313,7 @@ def catalogJSON():
     category = session.query(Category).all()
     item = session.query(Item).all()
 
-    
     catalog = [] 
-    temp = []
     for c in category:
         print('start of new category')
         catItem = []
@@ -327,15 +321,9 @@ def catalogJSON():
         for i in item:
             if i.category_id == c.id:
                 catItem.append(i.serialize)
-        #catalog['item'] = catItem
-        #print(c.item, ' citem')
-        temp.append(catItem)
-        catalog[c.id-1]['item'] = catItem 
-    print(catalog)
-        
+        catalog[c.id-1]['item'] = catItem         
     cat = {'category': catalog}
-
-    return jsonify(catalog)
+    return jsonify()
 
 
 
