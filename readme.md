@@ -47,26 +47,29 @@ File Content
     ***<dd>Styling for all pages on website.</dd>
 </dl>
 
-##Prerequisites
+## Prerequisites
 
 ###You need the follow libraries in python for the program to work
 Flask
 Sqlalchemy
 Oauth2
 
-##Setup
+## Setup
 
-###Clone the remote repository to local repository
+### Clone the remote repository to local repository
 ```
 git clone https://github.com/jbaik318/catalog
 ```
 
-###Set up database
+### Set up database
 ``` 
 python database_setup.py
 ```
 
-###Start the server program
+### Start the server program
 ```
 python catalog.py
 ```
+
+
+created by John B.
