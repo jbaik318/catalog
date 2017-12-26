@@ -254,6 +254,7 @@ def createItem(category_name):
         addItem = Item(name = request.form['name'], description = request.form['description'], catType = request.form.get('category'), category_id = category.id, user_id = login_session['user_id'])
         session.add(addItem)
         session.commit()
+        catalogJSON()
         return redirect(url_for('showCategory', category_name = category.name))
     else:
 		return render_template('newCategory.html', category = category, catalog = catalog )
@@ -275,6 +276,7 @@ def editItem(item_name):
         item.catType = request.form['category']
         session.add(item)
         session.commit()
+        catalogJSON()
         return redirect(url_for('showCategory', category_name = category.name))
     else:
         return render_template('editItem.html', item = item, catalog = catalog)
@@ -291,6 +293,7 @@ def deleteItem(item_name):
     if request.method == 'POST':
         session.delete(item)
         session.commit()
+        catalogJSON()
         return redirect(url_for('showCategory', category_name = category.name))
     else:
         return render_template('deleteItem.html', item = item )
@@ -306,9 +309,8 @@ def showItem(category_name, item_name):
 		return render_template('viewItem.html', item = item, category =category)
 
     
-# JSON APIs to view Catalog Information
-
-@app.route('/json')
+# Updates json file after every CRUD functon
+@app.route('/catalog.json')
 def catalogJSON():
     category = session.query(Category).all()
     item = session.query(Item).all()
@@ -323,20 +325,15 @@ def catalogJSON():
                 catItem.append(i.serialize)
         catalog[c.id-1]['item'] = catItem         
     cat = {'category': catalog}
-    return jsonify()
+    
+    with open('catalog.json', 'w') as outfile:
+        json.dump(cat, outfile)
+    
+    return jsonify(cat)
 
-
-
-
-@app.route('/JSON')
-def categoryJSON():
-    item = session.query(Item).all()
-    Catalog = []
     
 
-    for i in item:
-        Catalog.append(i.serialize)
-    return jsonify(Catalog)
+
 
 
 
