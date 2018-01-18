@@ -246,10 +246,10 @@ def showCategory(category_name):
 
 @app.route('/catalog/<category_name>/create', methods = ['GET','POST'])
 def createItem(category_name):
-    catalog = session.query(Category).all()
-    category = categoryToId(category_name)
     if 'username' not in login_session:
-		return redirect('/login')
+        return redirect('/login')catalog = session.query(Category).all()
+    category = categoryToId(category_name)
+
     if request.method == 'POST':
         addItem = Item(name = request.form['name'], description = request.form['description'], catType = request.form.get('category'), category_id = category.id, user_id = login_session['user_id'])
         session.add(addItem)
@@ -262,11 +262,11 @@ def createItem(category_name):
 
 @app.route('/catalog/<item_name>/edit', methods = ['GET','POST'])
 def editItem(item_name):
+    if 'username' not in login_session:
+        return redirect('/login')
     catalog = session.query(Category).all()
     item = itemToId(item_name)
     category = session.query(Category).filter_by(id = item.category_id).first()
-    if 'username' not in login_session:
-        return redirect('/login')
     if item.user_id != login_session['user_id']:
 		### create a js file for this line below
         return "<script>function myFunction() {alert('You are not authorized to edit this item. Please create your own item in order to edit.');}</script><body onload='myFunction()''>"
@@ -283,10 +283,10 @@ def editItem(item_name):
 
 @app.route('/catalog/<item_name>/delete', methods = ['GET','POST'])
 def deleteItem(item_name):
-    item = itemToId(item_name)
-    category = session.query(Category).filter_by(id = item.category_id).first()
     if 'username' not in login_session:
         return redirect('/login')
+    item = itemToId(item_name)
+    category = session.query(Category).filter_by(id = item.category_id).first()
     if item.user_id != login_session['user_id']:
         ### create a js file for this line below
         return "<script>function myFunction() {alert('You are not authorized to delete this item. Please create your own item in order to delete.');}</script><body onload='myFunction()''>"
